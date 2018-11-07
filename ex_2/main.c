@@ -1,8 +1,8 @@
 /*
- * ex_1.c
+ * ex_2.c
  *
- * Created: 2018-11-07 오후 3:16:50
- * Author : kccistc
+ * Created: 2018-11-07 오후 4:30:19
+ * Author : usuzin
  */ 
 
 #define F_CPU 16000000UL
@@ -12,13 +12,6 @@
 #define LED_TOGGLE(x,y)		x ^= (1<<y)
 #define LED_SET(x,y)		x |= (1<<y)
 #define LED_CLEAR(x,y)		x &= ~(1<<y)
-
-volatile int int_tim = 0;
-ISR(TIMER0_OVF_vect)
-{
-	int_tim++;
-	int_tim %= 64;
-}
 
 int AVR_init()
 {
@@ -34,15 +27,24 @@ int main()
 	sei();
 	
 	while(1)
-	{	
-		//문제 1번
-		if(int_tim == 20) // 63 1초 20번 0.3초 
+	{
+		//문제2번
+		for(int i = 0; i<16; i++)
 		{
-			PORTA = 0xff;
-		}
-		else
-		{
-			PORTA = 0x00;
+			if(i<8)
+			{
+				LED_SET(PORTA,i);
+				_delay_ms(300);
+				LED_CLEAR(PORTA,i);
+			}			
+			else
+			{
+				LED_SET(PORTA,((i%8)-7)*(-1)); 
+				_delay_ms(300);
+				LED_CLEAR(PORTA,((i%8)-7)*(-1));
+			}
 		}
 	}
 }
+
+
